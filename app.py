@@ -121,10 +121,31 @@ def home():
     """Render the UI"""
     return render_template('index.html')
 
+@app.route('/health')
+def health():
+    """Health check endpoint"""
+    status = {
+        "status": "healthy",
+        "model_loaded": model is not None,
+        "word_vectorizer_loaded": tfidf_word is not None,
+        "char_vectorizer_loaded": tfidf_char is not None,
+        "label_encoder_loaded": label_encoder is not None
+    }
+    
+    if all([model, tfidf_word, tfidf_char, label_encoder]):
+        return jsonify(status), 200
+    else:
+        status["status"] = "unhealthy"
+        return jsonify(status), 503
+
 @app.route('/predict', methods=['POST'])
 def predict():
     """API endpoint for predictions"""
     try:
+        # Check if model is loaded
+        if model is None or tfidf_word is None or tfidf_char is None:
+            return jsonify({"error": "Model not loaded yet. Please wait and try again."}), 503
+        
         data = request.get_json()
         text = data.get('text', '')
         
@@ -135,9 +156,31 @@ def predict():
         return jsonify(result)
     
     except Exception as e:
+        print(f"Error in predict: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    load_model()
+    print("Starting Flask application...")
+    try:
+        load_model()
+        print("Model loaded successfully, starting server...")
+    except Exception as e:
+        print(f"ERROR loading model: {e}")
+        import traceback
+        traceback.print_exc()
+        exit(1)
+    
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
+else:
+    # When running with gunicorn, load model on import
+    print("Loading model for gunicorn...")
+    try:
+        load_model()
+        print("Model loaded successfully!")
+    except Exception as e:
+        print(f"ERROR loading model: {e}")
+        import traceback
+        traceback.print_exc()
