@@ -89,11 +89,22 @@ def predict_text(text):
     probas = model.predict_proba(X_df)[0]
     pred_class = model.predict(X_df)[0]
     
+    # Map class numbers to names
+    class_names = {
+        'Geopolitical': 'Geopolitical',
+        'Personal': 'Personal',
+        'Political': 'Political',
+        'Religious': 'Religious'
+    }
+    
+    # Get the predicted class name
+    pred_class_name = label_encoder.classes_[pred_class]
+    
     # Format results
     results = []
     for cls, score in zip(label_encoder.classes_, probas):
         results.append({
-            "label": str(cls),
+            "label": cls,  # Use the actual class name
             "score": float(score)
         })
     
@@ -101,7 +112,7 @@ def predict_text(text):
     results.sort(key=lambda x: x['score'], reverse=True)
     
     return {
-        "prediction": str(pred_class),
+        "prediction": pred_class_name,  # Return class name instead of number
         "all_scores": results
     }
 
