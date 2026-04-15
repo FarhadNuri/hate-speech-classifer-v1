@@ -32,6 +32,25 @@ The system uses a LightGBM classifier trained on TF-IDF features extracted from 
 
 ---
 
+## Project Structure
+
+```
+bengali-hate-speech-classifier/
+├── app.py                     # Flask backend application
+├── templates/
+│   └── index.html             # Frontend UI
+├── charts                     # All project charts
+├── EDA_Summary.csv            # EDA results
+├── Model_Results.csv          # Result comparison of all models
+├── requirements.txt           # Python dependencies
+├── Dockerfile                 # Docker configuration
+├── Procfile                   # Process configuration for deployment
+├── nixpacks.toml              # Railway build configuration
+├── README.md                  # This file
+└── .gitignore                 # Git ignore rules
+```
+---
+
 ## Exploratory Data Analysis
 
 ### Dataset Overview
@@ -106,25 +125,6 @@ Based on these EDA findings, we designed our model with:
 - **SMOTE Balancing**: To address class imbalance and ensure fair representation
 - **LightGBM Classifier**: To handle the high-dimensional sparse features efficiently
 
----
-
-## Project Structure
-
-```
-bengali-hate-speech-classifier/
-├── app.py                     # Flask backend application
-├── templates/
-│   └── index.html             # Frontend UI
-├── charts                     # All project charts
-├── EDA_Summary.csv            # EDA results
-├── Model_Results.csv          # Result comparison of all models
-├── requirements.txt           # Python dependencies
-├── Dockerfile                 # Docker configuration
-├── Procfile                   # Process configuration for deployment
-├── nixpacks.toml              # Railway build configuration
-├── README.md                  # This file
-└── .gitignore                 # Git ignore rules
-```
 ---
 
 ## Model Architecture
